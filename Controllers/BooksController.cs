@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using Library.Models;
 
 namespace Library.Controllers
@@ -14,10 +16,12 @@ namespace Library.Controllers
     public class BooksController : ControllerBase
     {
         private readonly LibraryContext _context;
+        private readonly ILogger<BooksController> _logger;
 
-        public BooksController(LibraryContext context)
+        public BooksController(LibraryContext context, ILogger<BooksController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // HEAD api/Books
@@ -32,7 +36,7 @@ namespace Library.Controllers
 
         // GET: api/Books
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
+        public async Task<ActionResult<IEnumerable<Book>>> AllBooks()
         {
             return await _context.Books.ToListAsync();
         }
@@ -54,9 +58,9 @@ namespace Library.Controllers
         // PUT: api/Books/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBook(long id, Book book)
+        public async Task<IActionResult> UpdateBook(long id, Book book)
         {
-            if (id != book.Id)
+            if (id != book.ID)
             {
                 return BadRequest();
             }
@@ -85,12 +89,15 @@ namespace Library.Controllers
         // POST: api/Books
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Book>> PostBook(Book book)
+        public async Task<ActionResult<Book>> CreateBook(Book book)
         {
-            _context.Books.Add(book);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book);
+          _logger.LogDebug("Received: " + JObject.FromObject(book).ToString());
+
+          _context.Books.Add(book);
+          await _context.SaveChangesAsync();
+
+          return CreatedAtAction(nameof(GetBook), new { id = book.ID }, book);
         }
 
         // DELETE: api/Books/5
@@ -111,7 +118,7 @@ namespace Library.Controllers
 
         private bool BookExists(long id)
         {
-            return _context.Books.Any(e => e.Id == id);
+            return _context.Books.Any(e => e.ID == id);
         }
     }
 }

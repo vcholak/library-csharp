@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using Library.Models;
 
 namespace Library.Controllers
@@ -14,13 +16,15 @@ namespace Library.Controllers
     public class CopiesController : ControllerBase
     {
         private readonly LibraryContext _context;
+        private readonly ILogger<CopiesController> _logger;
 
-        public CopiesController(LibraryContext context)
+        public CopiesController(LibraryContext context, ILogger<CopiesController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
-        // HEAD api/Copies
+        // HEAD api/copies
         [HttpHead]
         public async Task<ActionResult> Count()
         {
@@ -30,7 +34,7 @@ namespace Library.Controllers
           return NoContent();
         }
 
-        // HEAD api/Copies/available
+        // HEAD api/copies/available
         [HttpHead("available")]
         public async Task<ActionResult> AvailableCount()
         {
@@ -42,14 +46,26 @@ namespace Library.Controllers
           return NoContent();
         }
 
-        // GET: api/Copies
+        // GET: api/copies
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BookInstance>>> GetBookInstance()
+        public async Task<ActionResult<IEnumerable<BookInstance>>> AllBookInstances()
         {
             return await _context.BookInstances.ToListAsync();
         }
 
-        // GET: api/Copies/5
+        // GET: api/copies/statuses
+        [HttpGet("statuses")]
+        public ActionResult<IEnumerable<string>> AllStatuses()
+        {
+            BookInstanceStatus[] arr = Enum.GetValues<BookInstanceStatus>();
+            List<string> lst = new List<string>();
+            foreach(BookInstanceStatus e in arr) {
+              lst.Add(e.ToString());
+            }
+            return Ok(lst);
+        }
+
+        // GET: api/copies/5
         [HttpGet("{id}")]
         public async Task<ActionResult<BookInstance>> GetBookInstance(long id)
         {
@@ -63,12 +79,12 @@ namespace Library.Controllers
             return bookInstance;
         }
 
-        // PUT: api/Copies/5
+        // PUT: api/copies/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBookInstance(long id, BookInstance bookInstance)
+        public async Task<IActionResult> UpdateBookInstance(long id, BookInstance bookInstance)
         {
-            if (id != bookInstance.Id)
+            if (id != bookInstance.ID)
             {
                 return BadRequest();
             }
@@ -94,18 +110,20 @@ namespace Library.Controllers
             return NoContent();
         }
 
-        // POST: api/Copies
+        // POST: api/copies
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<BookInstance>> PostBookInstance(BookInstance bookInstance)
         {
+          _logger.LogDebug("Received: " + JObject.FromObject(bookInstance).ToString());
+
             _context.BookInstances.Add(bookInstance);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetBookInstance), new { id = bookInstance.Id }, bookInstance);
+            return CreatedAtAction(nameof(GetBookInstance), new { id = bookInstance.ID }, bookInstance);
         }
 
-        // DELETE: api/Copies/5
+        // DELETE: api/copies/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBookInstance(long id)
         {
@@ -123,7 +141,7 @@ namespace Library.Controllers
 
         private bool BookInstanceExists(long id)
         {
-            return _context.BookInstances.Any(e => e.Id == id);
+            return _context.BookInstances.Any(e => e.ID == id);
         }
     }
 }

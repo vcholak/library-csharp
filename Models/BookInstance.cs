@@ -4,7 +4,7 @@ namespace Library.Models
 {
   public class BookInstance
   {
-    public long Id { get; set; }
+    public long ID { get; set; }
     public Book Book { get; set; }
     public string Imprint { get; set; }
     public BookInstanceStatus Status { get; set; }

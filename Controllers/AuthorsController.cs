@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using Library.Models;
 
 namespace Library.Controllers
@@ -35,7 +36,7 @@ namespace Library.Controllers
 
         // GET: api/Authors
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Author>>> GetAuthors()
+        public async Task<ActionResult<IEnumerable<Author>>> AllAuthors()
         {
             return await _context.Authors.ToListAsync();
         }
@@ -57,9 +58,9 @@ namespace Library.Controllers
         // PUT: api/Authors/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAuthor(long id, Author author)
+        public async Task<IActionResult> UpdateAuthor(long id, Author author)
         {
-            if (id != author.Id)
+            if (id != author.ID)
             {
                 return BadRequest();
             }
@@ -89,13 +90,14 @@ namespace Library.Controllers
         // POST: api/Authors
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Author>> PostAuthor(Author author)
+        public async Task<ActionResult<Author>> CreateAuthor(Author author)
         {
-          _logger.LogDebug(author.ToString());
+          _logger.LogDebug("Received: " + JObject.FromObject(author).ToString());
+
           _context.Authors.Add(author);
           await _context.SaveChangesAsync();
 
-          return CreatedAtAction(nameof(GetAuthor), new { id = author.Id }, author);
+          return CreatedAtAction(nameof(GetAuthor), new { id = author.ID }, author);
         }
 
         // DELETE: api/Authors/5
@@ -116,7 +118,7 @@ namespace Library.Controllers
 
         private bool AuthorExists(long id)
         {
-            return _context.Authors.Any(e => e.Id == id);
+            return _context.Authors.Any(e => e.ID == id);
         }
     }
 }
