@@ -37,6 +37,7 @@ namespace Library
 
             services.AddControllers();
 
+            // see DataDir in appsettings.Development.json
             string dataDir = Configuration.GetValue<string>("DataDir");
             string connectionStr = $"Data Source={dataDir}/library.db;Cache=Shared";
             services.AddDbContext<LibraryContext>(opt => opt.UseSqlite(connectionStr));
