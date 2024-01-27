@@ -10,7 +10,7 @@ namespace Library.Models
     [Column("id")]
     public long ID { get; set; }
 
-    [Column("firs_name")]
+    [Column("first_name")]
     public string FirstName { get; set; }
 
     [Column("family_name")]
@@ -20,7 +20,7 @@ namespace Library.Models
     public DateTime BirthDate { get; set; }
 
     [Column("death_date")]
-    public DateTime DeathDate { get; set; }
+    public DateTime? DeathDate { get; set; }
 
     [Column("life_span")]
     public string LifeSpan { get; set; }
