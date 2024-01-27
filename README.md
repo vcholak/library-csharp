@@ -1,5 +1,9 @@
-# Library Backend
+# Library app C# Backend
 
-## TODO List
+## Run app
 
-1. Add HTTPS for Development environment
+Run app under https profile:
+
+bash```
+dotnet run --launch-profile https
+```
