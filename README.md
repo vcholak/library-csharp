@@ -4,6 +4,7 @@
 
 Run app under https profile:
 
-bash```
+```
 dotnet run --launch-profile https
 ```
+
