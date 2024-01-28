@@ -6,7 +6,7 @@ namespace Library.Models
   public class Book
   {
     [Column("id")]
-    public long ID { get; set; }
+    public long Id { get; set; }
 
     [Column("title")]
     public string Title { get; set; }
@@ -18,9 +18,13 @@ namespace Library.Models
     public string ISBN { get; set; }
 
     [Column("author_id")]
+    public long AuthorId { get; set; }
+
     public Author Author { get; set; }
 
     [Column("genre_id")]
+    public long GenreId { get; set; }
+
     public Genre Genre { get; set; }
   }
 }
