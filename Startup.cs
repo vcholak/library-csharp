@@ -23,7 +23,7 @@ namespace Library
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors(options => options.AddDefaultPolicy(
-              builder => builder.WithOrigins("http://localhost:3000")
+              builder => builder.WithOrigins("http://localhost:3000", "http://localhost:5173")
                 .WithHeaders("Origin", "Content-Type", "Accept", "Authorization")
                 .WithExposedHeaders("X-Result-Count")
                 .WithMethods("HEAD", "GET", "POST", "PUT", "PATCH", "DELETE")
