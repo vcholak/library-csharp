@@ -10,6 +10,8 @@ namespace Library.Models
     public long ID { get; set; }
 
     [Column("book_id")]
+    public long BookId { get; set; }
+
     public Book Book { get; set; }
 
     [Column("imprint")]
@@ -17,8 +19,9 @@ namespace Library.Models
 
     [Column("status")]
     public BookInstanceStatus Status { get; set; }
+
     [Column("due_back")]
-    public DateTime DueBack { get; set; }
+    public DateTime? DueBack { get; set; }
   }
 
   public enum BookInstanceStatus
