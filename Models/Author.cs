@@ -8,7 +8,7 @@ namespace Library.Models
   public class Author
   {
     [Column("id")]
-    public long Id { get; set; }
+    public long ID { get; set; }
 
     [Column("first_name")]
     public string FirstName { get; set; }
